@@ -1,0 +1,598 @@
+#N canvas 25 22 1343 621 10;
+#X obj 2 2 cnv 15 437 600 empty empty ABOUT: 17 23 0 19 -179252 -66577
+0;
+#X obj 30 70 cnv 15 350 25 empty empty empty 20 12 0 14 -233017 -66577
+0;
+#X obj 30 163 cnv 15 106 85 empty empty empty 20 12 0 14 -224825 -66577
+0;
+#X text 34 163 The patch is a \; - sampler \; - harmonizer \; - Phase
+Vocoder \; - Autotuner \; - Granulator;
+#X obj 30 305 cnv 15 375 283 empty empty empty 20 12 0 14 -224825 -66577
+0;
+#X obj 159 211 cnv 15 193 24 empty empty empty 20 12 0 14 -175206 -66577
+0;
+#X text 165 213 Bug reports: porres@gmail.com;
+#X text 150 166 (C) Copyright Alexandre Torres Porres \; released under
+the GNU GPL v3;
+#X obj 440 2 cnv 15 900 600 empty empty empty 20 12 0 14 -253822 -66577
+0;
+#X text 751 550 harmony-voice;
+#X text 620 549 root-voice;
+#X obj 1001 564 bng 15 250 50 0 empty empty empty 17 7 0 10 -191407
+-1 -1;
+#X text 1022 545 bang whenever;
+#X text 1022 561 finishes playing;
+#X text 511 570 master output;
+#X text 458 207 Audio input;
+#X text 1023 575 or loops around;
+#X obj 462 10 cnv 15 380 140 empty empty Arguments: 16 19 0 14 -233017
+-66577 0;
+#X obj 486 229 adc~ 1;
+#N canvas 659 51 516 276 fft 0;
+#X msg 37 36 lock \$1;
+#X obj 37 16 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X msg 57 138 window \$1;
+#X msg 68 177 <;
+#X msg 108 176 >;
+#X obj 57 66 hradio 15 1 0 6 empty empty empty 0 -8 0 10 -262144 -1
+-1 0;
+#X obj 39 237 outlet;
+#X floatatom 57 115 5 0 0 0 - - -;
+#X text 65 13 phase-lock;
+#X text 127 133 if the number is not a power of 2 \, it rounds to the
+nearest power of two below that number.;
+#X text 141 175 navigates through the window options in a loop fashion
+;
+#X text 127 116 Window Size (powers of 2 from 256 to 8192);
+#X obj 57 91 expr pow(2 \, ($f1 + 8));
+#X text 144 12 Miller Puckette's phase-locking feature;
+#X connect 0 0 6 0;
+#X connect 1 0 0 0;
+#X connect 2 0 6 0;
+#X connect 3 0 6 0;
+#X connect 4 0 6 0;
+#X connect 5 0 12 0;
+#X connect 7 0 2 0;
+#X connect 12 0 7 0;
+#X restore 1001 175 pd fft;
+#N canvas 136 22 870 714 shifter 0;
+#X msg 129 468 root \$1;
+#X floatatom 120 402 5 0 0 0 - - -;
+#X floatatom 129 444 5 0 0 0 - - -;
+#X msg 120 421 harm \$1;
+#X msg 154 605 harmonizer \$1;
+#X obj 154 583 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 109 352 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 19 92 div \$1 \$2;
+#X floatatom 20 42 5 0 0 0 - - -;
+#X floatatom 65 42 5 0 0 0 - - -;
+#X obj 34 685 outlet;
+#X text 185 403 shiffting in cents of harmony-voice;
+#X text 187 448 shiffting in cents of root-voice;
+#X text 179 581 harmonizer toggle;
+#X text 12 17 ratio;
+#X text 68 18 steps;
+#X text 135 228 scale;
+#X msg 86 250 0 220 440 660 880 1100;
+#X msg 42 166 div 2 24;
+#X text 102 164 (example of quarter-tones division of the octave);
+#X msg 60 191 div 3 13;
+#X text 120 189 (example of Bohlen-Pierce scale);
+#X msg 94 328 print-scale;
+#X text 177 327 prints the scale on terminal window;
+#X text 468 31 This is something you can only specify through messages
+sent to the patch. You can click on the "steps" number box in the patch
+and it will generate an equal division scale based on that number of
+steps \, but you can't specify which interval ratio will be divided.
+So it will always divide to the ratio that was set by this message.
+In the case this value wasn't set by a message \, the default interval
+value loaded on the patch depends on the loaded scale on the preset
+;
+#X msg 145 516 harm step \$1;
+#X msg 147 558 root step \$1;
+#X floatatom 145 493 5 0 0 0 - - -;
+#X floatatom 148 538 5 0 0 0 - - -;
+#X text 248 601 Makes the shiffting value of harmony-voice to be in
+an interval relation to the root-voice shift;
+#X msg 156 652 portamento \$1;
+#X floatatom 156 630 5 0 0 0 - - -;
+#X text 185 489 shiffting in scale steps of harmony-voice;
+#X text 192 536 shiffting in scale steps of root-voice;
+#X obj 346 74 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X text 457 33 *;
+#X text 168 374 turns autotuner on/off according to the loaded scale
+;
+#X obj 395 328 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X obj 437 489 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X obj 426 536 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X obj 615 652 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X text 247 652 Portamento time in ms to shfit from one interval to
+the next;
+#X msg 32 126 steps \$1;
+#X text 92 126 Divides the interval into another number of equal steps
+;
+#X msg 109 374 tuner \$1;
+#X obj 602 250 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X text 98 70 Generates a scale that equally divides;
+#X text 99 86 an interval ratio in X steps;
+#X obj 20 69 pack f f;
+#X text 392 71 *;
+#X text 238 219 list of numbers: scale steps in cents (needs to star
+with zero). This allows ANY Kind of scale to be loaded into the patch!
+The scales are also stored on the presets. It doesn't need to be equal
+nor end in an octave. The highest value will be interpreted as the
+new starting point of the next scale cycle. It is also the default
+interval value that you can divide into equal steps;
+#X connect 0 0 10 0;
+#X connect 1 0 3 0;
+#X connect 2 0 0 0;
+#X connect 3 0 10 0;
+#X connect 4 0 10 0;
+#X connect 5 0 4 0;
+#X connect 6 0 44 0;
+#X connect 7 0 10 0;
+#X connect 8 0 48 0;
+#X connect 9 0 48 1;
+#X connect 17 0 10 0;
+#X connect 18 0 10 0;
+#X connect 20 0 10 0;
+#X connect 22 0 10 0;
+#X connect 25 0 10 0;
+#X connect 26 0 10 0;
+#X connect 27 0 25 0;
+#X connect 28 0 26 0;
+#X connect 30 0 10 0;
+#X connect 31 0 30 0;
+#X connect 42 0 10 0;
+#X connect 44 0 10 0;
+#X connect 48 0 7 0;
+#X restore 927 167 pd shifter \; tuner;
+#N canvas 553 32 791 638 player 0;
+#X msg 204 293 bounce;
+#X msg 196 264 loop \$1;
+#X obj 196 245 hradio 15 1 0 3 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X msg 34 -87 speed \$1;
+#X obj 34 -110 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 0 256;
+#X obj 216 324 vsl 11 55 0 1 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 0 1;
+#X msg 216 385 master \$1;
+#X msg 130 93 location \$1;
+#X obj 133 73 hsl 128 15 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 0;
+#X msg 180 216 rewind;
+#X obj 175 473 outlet;
+#X obj 73 -50 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 0 256;
+#X msg 73 -26 target \$1;
+#X msg 151 149 time-ms \$1;
+#X msg 105 46 play \$1;
+#X obj 105 24 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 151 123 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 0 256;
+#X text 208 95 location slider;
+#X msg 166 192 freeze \$1;
+#X obj 166 171 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 232 185 Freeze Toggle;
+#X text 126 22 Play/Stop Toggle;
+#X text 249 252 loop h-radio;
+#X text 234 340 Master Volume;
+#X text 98 -100 Speed of play in %;
+#X text 251 286 bounce bang (this changes;
+#X text 258 304 the playing direction);
+#X msg 228 414 mute;
+#X text 266 413 mute/unmute button;
+#X text 228 217 rewind button;
+#X text 225 149 play from time X in ms;
+#X obj 365 149 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X floatatom 231 -111 0 0 0 0 - - -;
+#X text 291 -111 This might be handy...;
+#X text 139 -31 Target duration (or real duration of buffer according
+to speed) in min.sec/ms (like time number box)*;
+#X text 339 4 *affects speed % and vice-vera;
+#X obj 231 -85 expr int($f1 / 60) + (fmod($f1 \, 60)/100);
+#X text 492 -91 converts seconds to minutes (integer part) \; and seconds/ms
+(decimal part);
+#X connect 0 0 10 0;
+#X connect 1 0 10 0;
+#X connect 2 0 1 0;
+#X connect 3 0 10 0;
+#X connect 4 0 3 0;
+#X connect 5 0 6 0;
+#X connect 6 0 10 0;
+#X connect 7 0 10 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 11 0 12 0;
+#X connect 12 0 10 0;
+#X connect 13 0 10 0;
+#X connect 14 0 10 0;
+#X connect 15 0 14 0;
+#X connect 16 0 13 0;
+#X connect 18 0 10 0;
+#X connect 19 0 18 0;
+#X connect 27 0 10 0;
+#X connect 32 0 36 0;
+#X connect 36 0 11 0;
+#X restore 706 175 pd player;
+#X obj 632 229 r sampler;
+#X obj 559 229 r presets;
+#X obj 559 203 s presets;
+#N canvas 179 22 1061 670 presets 0;
+#X msg 325 506 left;
+#X msg 361 506 right;
+#X msg 282 476 up;
+#X msg 310 476 down;
+#X floatatom 74 129 5 0 0 0 - - -;
+#X msg 130 220 bang;
+#X msg 117 197 toggle;
+#X obj 140 611 outlet;
+#X msg 104 177 name \$1;
+#X symbolatom 104 154 10 0 0 0 - - -;
+#X text 346 476 Navigate Preset Banks;
+#X obj 498 469 hradio 15 1 0 4 empty empty empty 0 -8 0 10 -262144
+-1 -1 0;
+#X obj 498 493 + 1;
+#X floatatom 498 519 5 0 0 0 - - -;
+#X text 545 520 preset unit (1 to 4);
+#X text 163 195 store/load toggle;
+#X text 164 219 store/load bang;
+#X msg 498 545 radio \$1;
+#X text 561 544 sets the preset radio GUI;
+#X text 455 119 The presets include just about every control that's
+relevant to be saved on your patch.;
+#X obj 411 505 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X text 455 48 LOADING AND SAVING PRESETS \; There's a presets folder
+that stores a preset file whenever you save a preset. You can load
+this file into any preset number afterwards. The file is stored with
+the preset name and the file extension .brn;
+#X text 115 129 preset number (change preset);
+#X text 172 154 preset name (change preset name);
+#X text 457 162 Preset numbers are from 1 to 94 \, but only units from
+1 to 4 are good (1 to 4 \, 11 to 14 \, 21 to 24 and so on). Thus \,
+there are 10 groups of presets and a total of 40 presets. If you insert
+a number that doesn't correspond to a preset \, the default preset
+(number 1) will be loaded.;
+#X msg 150 257 load;
+#X msg 270 402 store;
+#X msg 170 331 load fast;
+#X text 314 403 directly stores presets;
+#X text 371 424 Aditional optional arguments can be "preset name" (if
+symbol) \, "preset number" (if float) or both (in any order).;
+#X msg 275 431 store test 33;
+#X msg 158 295 load 4;
+#X msg 179 368 load fast 24;
+#X text 185 258 directly loads presets;
+#X msg 270 368 load 34 slowy;
+#X text 365 369 you can use both arguments (in any order) *;
+#X msg 863 397 load 41 slowy \, store;
+#X text 239 325 optinal argument \, preset name (gets file with same
+name in ./presets subfolder).;
+#X text 208 289 optinal argument \, preset number where to load the
+preset file;
+#X obj 335 256 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X obj 459 402 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X text 649 348 * the load command only loads the preset and does not
+store it. But the hint is that \, when you have 2 arguments \, you
+can store it afterwards by inserting a "store" command message after
+a comma \, like this:;
+#X connect 0 0 7 0;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 3 0 7 0;
+#X connect 4 0 7 0;
+#X connect 5 0 7 0;
+#X connect 6 0 7 0;
+#X connect 8 0 7 0;
+#X connect 9 0 8 0;
+#X connect 11 0 12 0;
+#X connect 12 0 13 0;
+#X connect 13 0 17 0;
+#X connect 17 0 7 0;
+#X connect 25 0 7 0;
+#X connect 26 0 7 0;
+#X connect 27 0 7 0;
+#X connect 30 0 7 0;
+#X connect 31 0 7 0;
+#X connect 32 0 7 0;
+#X connect 34 0 7 0;
+#X restore 559 175 pd presets;
+#X obj 706 203 s player;
+#X obj 706 229 r player;
+#X obj 780 203 s slicer;
+#X obj 780 229 r slicer;
+#X obj 853 229 r grainer;
+#X obj 927 203 s shifter;
+#X obj 927 229 r shifter;
+#X obj 1001 203 s fft;
+#X obj 1001 229 r fft;
+#X obj 479 569 dac~;
+#X obj 1115 68 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X text 906 23 Messages sent to the inlets can change every single
+control of the patch and its settings. Each group of controls has its
+own inlet. Some extra features are only possible via messages \, they
+are marked here as:;
+#X text 905 95 Check bellow which groups they are \, and open the subpatches
+to see what messages to send. The patch's features will become clearer
+then...;
+#N canvas 291 37 953 593 sampler 0;
+#X msg 98 184 rec;
+#X msg 112 214 pause;
+#X msg 25 23 open;
+#X msg 127 262 time \$1;
+#X floatatom 127 239 0 0.001 60 0 - - -;
+#X floatatom 130 286 5 5 900 0 - - -;
+#X msg 130 308 fade \$1;
+#X obj 76 540 outlet;
+#X msg 139 355 autostart \$1;
+#X obj 139 335 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 153 212 Pause and unpause recording;
+#X text 169 285 recording fade in/out in ms;
+#X text 160 335 Starts playing automatically if toggle on;
+#X text 149 155 resets sample rate to Pd's;
+#X msg 85 154 reset-SR;
+#X msg 47 56 open samples/sax.wav;
+#X msg 70 103 open samples/sax.wav 96;
+#X text 225 85 optional 2nd argument: sound file's sample rate in Khz
+- this is needed if different than the one Pd is running at \, since
+a sample rate compensation is needed both for pitch and time-stretch
+;
+#X msg 156 388 normalize;
+#X msg 162 445 auto-normalize \$1;
+#X obj 162 425 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X text 280 421 normalizes after recording is finished \; (if not playing
+simultaneously);
+#X obj 331 389 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X obj 486 443 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X obj 312 154 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X obj 587 84 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X text 634 82 *;
+#X text 628 122 inside the patch;
+#X text 594 108 * You can't set Sample Rate;
+#X msg 162 496 export;
+#X obj 538 496 cnv 15 45 18 empty empty (extra) 2 9 2 15 -162280 -90113
+0;
+#X text 282 451 DEFAULT: ON;
+#X text 593 185 ** Note that the help file has this sample that runs
+at 96Khz and is 4839 ms long. If you're running Pd at the sample rate
+of 44.1Khz and record on top of this buffer \, the buffer time will
+be updated to 10535 ms to match the 44.1Khz sample rate.;
+#X text 221 389 normalizes buffer;
+#X text 385 389 (By the way \, samples are always normalized when loaded)
+;
+#X text 180 55 1st argument: sound file (no 2nd argument means that
+sample;
+#X text 540 55 rate is the same as Pd's);
+#X text 63 21 open command with no arguments: Choose sound file from
+;
+#X text 183 241 buffer length in min (integer part) and sec/ms (decimal
+part) - min 100 ms / max 60 min (ms are rounded);
+#X text 394 21 computer (sets sample rate according to Pd's);
+#X text 310 185 (resets sample rate to Pd's automatically**);
+#X text 128 185 Records audio input on buffer;
+#X text 191 307 (from 5ms to 900ms);
+#X text 364 155 (not too useful by the way...);
+#X text 212 495 exports recorded buffer to aif file in samples folder
+;
+#X connect 0 0 7 0;
+#X connect 1 0 7 0;
+#X connect 2 0 7 0;
+#X connect 3 0 7 0;
+#X connect 4 0 3 0;
+#X connect 5 0 6 0;
+#X connect 6 0 7 0;
+#X connect 8 0 7 0;
+#X connect 9 0 8 0;
+#X connect 14 0 7 0;
+#X connect 15 0 7 0;
+#X connect 16 0 7 0;
+#X connect 18 0 7 0;
+#X connect 19 0 7 0;
+#X connect 20 0 19 0;
+#X connect 29 0 7 0;
+#X restore 632 175 pd sampler;
+#X obj 632 203 s sampler;
+#X text 1090 497 * miliseconds are rounded;
+#N canvas 496 146 785 538 random 0;
+#X obj 119 481 outlet;
+#X obj 144 147 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 179 209 hsl 60 12 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 37 22 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X msg 37 44 speed \$1;
+#X obj 221 307 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 202 259 hsl 60 12 0 500 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X msg 199 279 tempo \$1;
+#X text 96 43 Random Speed;
+#X msg 176 229 range \$1;
+#X msg 144 171 shift \$1;
+#X text 205 170 Random shift;
+#X msg 110 111 play \$1;
+#X msg 141 78 2;
+#X msg 81 78 0;
+#X msg 110 78 1;
+#X msg 221 329 loose \$1;
+#X text 285 328 Loose Tempo;
+#X text 260 279 Random Tempo (0 - 500);
+#X text 238 230 Shifting Range (0 - 1);
+#X text 173 78 Random Location: 2 => drunk \, 1 => random \, 0 => off
+;
+#X text 174 99 (when play toggle is off \, plays grains of the sample)
+;
+#X msg 491 286 chop \$1;
+#X obj 491 262 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X msg 501 336 rate \$1;
+#X msg 521 390 grain \$1;
+#X floatatom 501 312 0 0 0 0 - - -;
+#X floatatom 521 365 0 0 0 0 - - -;
+#X text 518 261 turns chopper on \, which plays grains;
+#X text 545 284 of sample at a rate in ms;
+#X text 582 389 grain size in ms;
+#X text 511 418 minimum grain size = window size;
+#X text 510 439 maximum grain size = rate amount;
+#X text 559 337 rate amount in ms;
+#X connect 1 0 10 0;
+#X connect 2 0 9 0;
+#X connect 3 0 4 0;
+#X connect 4 0 0 0;
+#X connect 5 0 16 0;
+#X connect 6 0 7 0;
+#X connect 7 0 0 0;
+#X connect 9 0 0 0;
+#X connect 10 0 0 0;
+#X connect 12 0 0 0;
+#X connect 13 0 12 0;
+#X connect 14 0 12 0;
+#X connect 15 0 12 0;
+#X connect 16 0 0 0;
+#X connect 22 0 0 0;
+#X connect 23 0 22 0;
+#X connect 24 0 0 0;
+#X connect 25 0 0 0;
+#X connect 26 0 24 0;
+#X connect 27 0 25 0;
+#X restore 853 167 pd random \; chop;
+#X obj 853 203 s grainer;
+#X text 1013 361 <== Buffer (min:sec / ms*);
+#X text 1013 445 <== Player (min:sec / ms*);
+#X text 1013 418 <== Real Time (min:sec / ms*);
+#X text 483 127 * therefore \, only needed if rate's different than
+Pd's;
+#X text 477 45 <1st>: Preset Number - [Default value: Preset #1] \;
+<2nd>: if symbol = sound file name: if float = buffer time length in
+min (integer part) and sec/ms (decimal part) \, minimum 100 ms / maximum
+60 min - [Default value: 1 min] \; <3rd>: sound file's sample rate
+in Khz - [Default: Pd's sample rate]*;
+#X text 1013 398 <== Target buffer in min.sec/ms* (relates to speed)
+;
+#X text 880 551 scale;
+#X text 915 551 output;
+#X obj 872 576 print scale;
+#N canvas 828 22 516 508 slicer 0;
+#X msg 44 50 \$1 L;
+#X msg 81 50 \$1 C;
+#X msg 119 50 \$1 R;
+#X obj 72 13 hsl 50 8 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 84 24 hsl 50 8 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X obj 94 34 hsl 50 8 0 1 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X msg 44 80 slider \$2 \$1;
+#X msg 80 136 slice \$1;
+#X floatatom 80 113 5 0 0 0 - - -;
+#X floatatom 103 167 5 0 0 0 - - -;
+#X msg 103 188 min-slice \$1;
+#X msg 119 229 L-bng;
+#X msg 166 230 R-bng;
+#X msg 120 251 L-tgl;
+#X msg 167 251 R-tgl;
+#X obj 173 313 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0
+1;
+#X obj 118 433 outlet;
+#X text 142 166 minimum slice size (min-size) in seconds;
+#X text 213 238 Slicer Bangs and Toggles;
+#X text 254 286 shuffles slice;
+#X msg 170 286 shuffle-bng;
+#X msg 173 335 shuffle-tgl \$1;
+#X text 202 313 shuffles slice automatically;
+#X text 158 15 slicing-sliders;
+#X text 118 111 slice size in seconds;
+#X msg 174 366 trim;
+#X msg 179 394 untrim;
+#X text 229 393 go back to original length;
+#X text 200 432 * only when buffer is loaded or fully recorded;
+#X text 213 365 trim to selected slice *;
+#X connect 0 0 6 0;
+#X connect 1 0 6 0;
+#X connect 2 0 6 0;
+#X connect 3 0 0 0;
+#X connect 4 0 1 0;
+#X connect 5 0 2 0;
+#X connect 6 0 16 0;
+#X connect 7 0 16 0;
+#X connect 8 0 7 0;
+#X connect 9 0 10 0;
+#X connect 10 0 16 0;
+#X connect 11 0 16 0;
+#X connect 12 0 16 0;
+#X connect 13 0 16 0;
+#X connect 14 0 16 0;
+#X connect 15 0 21 0;
+#X connect 20 0 16 0;
+#X connect 21 0 16 0;
+#X connect 25 0 16 0;
+#X connect 26 0 16 0;
+#X restore 780 166 pd slicer \; trimmer;
+#X obj 486 258 Brane-e 1 ./samples/sax.wav 96;
+#X text 33 74 [Brane-e] 2.0: the Essential/Economic Version of [Brane~]
+;
+#X text 30 112 ==> 2nd Official Release of Brane-e \, from november
+2015 <==;
+#X text 34 307 A bit more \; The patch can load and store 40 presets
+\, and you can switch between them to change the parameters on the
+fly \; It consists of a Pure Data Patch (an abstraction) made only
+of Vanilla objects. In this essential/economic version \, we basically
+have a Granulating Sampler with Phase Vocoding (more precisely "Phase
+Accumulation") to perform Pitch Shift and Time Stretch/Compress) \;
+The Phase Accumulation is equivalent to the one implemented in Miller
+Puckette's Phase Locking Vocoder - available in Pd's examples (I07.Phase
+Vocoder) \; In this patch \, the sampler records or plays mono files
+and runs two Phase-Vocoders with the same tempo transformation but
+independent Pitch Shifting. Thus \, we got 2 independent voices: a
+"root" and a "harmony". The patch also allows autotuning to any loaded
+music scale \, and has a built-in scale generator based on Equal Divisions
+\; Moreover \, the playing capabilities of the sampler allows automatic
+looping \, bouncing \, freeze and selection of audio slices. It also
+has other features like some granular fun and random playing settings.
+;
+#X obj 111 264 cnv 15 200 24 empty empty empty 20 12 0 14 -245039 -66577
+0;
+#X text 116 268 It is also a Pd Vanilla Patch!!!;
+#X connect 18 0 54 0;
+#X connect 19 0 33 0;
+#X connect 20 0 31 0;
+#X connect 21 0 26 0;
+#X connect 22 0 54 2;
+#X connect 23 0 54 1;
+#X connect 25 0 24 0;
+#X connect 27 0 54 3;
+#X connect 29 0 54 4;
+#X connect 30 0 54 5;
+#X connect 32 0 54 6;
+#X connect 34 0 54 7;
+#X connect 39 0 40 0;
+#X connect 42 0 43 0;
+#X connect 53 0 28 0;
+#X connect 54 0 35 0;
+#X connect 54 0 35 1;
+#X connect 54 3 52 0;
+#X connect 54 4 11 0;
